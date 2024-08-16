@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -17,6 +19,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  final auth = FirebaseAuth.instance;
+  final formkey = GlobalKey<FormState>();
   bool isSignedin = false;
   @override
   Widget build(BuildContext context) {
@@ -24,34 +28,47 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       backgroundColor: AppColors.lite_20_green,
       body: SingleChildScrollView(
-        child: Column(
-        
-          children: [
-            SizedBox(height:  height*0.2,),
-            Center(child: Image.asset("assets/images/splash_image.png")),
-            SizedBox(height: height*0.03,),
-            const Text("Log in",style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),),
-            SizedBox(height: height*0.03,),
-        
-             MyLoginSignUpTextField(hintText: "Username",controller: emailController,),
-             MyLoginSignUpTextField(hintText: "Password",controller: passwordController,),
+        child: Form(
+          key: formkey,
+          child: Column(
+          
+            children: [
+              SizedBox(height:  height*0.2,),
+              Center(child: Image.asset("assets/images/splash_image.png")),
+              SizedBox(height: height*0.03,),
+              const Text("Log in",style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),),
+              SizedBox(height: height*0.03,),
+          
+               MyLoginSignUpTextField(hintText: "Username",controller: emailController,),
+               MyLoginSignUpTextField(hintText: "Password",controller: passwordController,),
+          
+              TextButton(onPressed: (){}, child: const  Text("Forgot your password?",
+              style: TextStyle(color :AppColors.lite_green,fontSize: 16,fontWeight: FontWeight.bold),)),
+              
+              const SizedBox(width: 25,),
+              MyAnimatedButton(ontap: (){
+          
+                if(formkey.currentState!.validate()){
+                  auth.signInWithEmailAndPassword(email: emailController.text, password: passwordController.text).then((value){
+                    Get.to(() => const ProfileBuildPage());
+                  }).onError((e,stackTrace){
+                    Get.snackbar("Error", "$e");
+                  });
 
-            TextButton(onPressed: (){}, child: const  Text("Forgot your password?",
-            style: TextStyle(color :AppColors.lite_green,fontSize: 16,fontWeight: FontWeight.bold),)),
-            
-            const SizedBox(width: 25,),
-            MyAnimatedButton(ontap: (){
-              Get.to(() => const ProfileBuildPage());
-            } ,firstText: "Login",secondText: "Logging in...",),
-            TextButton(onPressed: (){
-              Get.to(() => const SignupPage());
-            }, child: const  Text("Create an account",
-                style: TextStyle(color :AppColors.lite_green,fontSize: 16,fontWeight: FontWeight.bold),)),
-
-
-            
-        
-          ],
+                  
+                }
+                
+              } ,firstText: "Login",secondText: "Logging in...",),
+              TextButton(onPressed: (){
+                Get.to(() => const SignupPage());
+              }, child: const  Text("Create an account",
+                  style: TextStyle(color :AppColors.lite_green,fontSize: 16,fontWeight: FontWeight.bold),)),
+          
+          
+              
+          
+            ],
+          ),
         ),
       )
     );
