@@ -28,8 +28,8 @@ class _SplashScreenState extends State<SplashScreen> {
           Center(
             child: Image.asset("assets/images/splash_image.png"),
           ),
-          SizedBox(height: 40,),
-          Text("Slim Track",style: TextStyle(fontSize: 40,fontWeight: FontWeight.bold),)
+          const SizedBox(height: 40,),
+          const Text("Slim Track",style: TextStyle(fontSize: 40,fontWeight: FontWeight.bold),)
         ],
       )
     );

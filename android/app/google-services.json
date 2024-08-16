@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "818741741246",
+    "project_id": "slim-track-42171",
+    "storage_bucket": "slim-track-42171.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:818741741246:android:76d76cbd0496ef973480ef",
+        "android_client_info": {
+          "package_name": "com.example.slim_track"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "818741741246-2e9o1s31vhksam61qhn3nbs2vleq7q7v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDeZLQ7YIJmjvMYLyWn3Y_AWdEj2HbKWc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "818741741246-2e9o1s31vhksam61qhn3nbs2vleq7q7v.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "818741741246-t9pkk0mkh89ubf4nd0kmubtmiuiehfk8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.slimTrack"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

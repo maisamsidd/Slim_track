@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:slim_track/Controller/Splash_services/splash_screen.dart';
 import 'package:slim_track/Resources/App_colors.dart/app_colors.dart';
 import 'package:slim_track/Resources/Buttons/Animated_button.dart';
+import 'package:slim_track/View/Authentication/Login_Page.dart';
 
 class GetStarted extends StatefulWidget {
   const GetStarted({super.key});
@@ -33,14 +35,16 @@ class _GetStartedState extends State<GetStarted> {
             child: Image.asset("assets/images/splash_image.png"),
           ),
           SizedBox(height: height*0.08,),
-          Text("Slim Track",style: TextStyle(fontSize: 35,fontWeight: FontWeight.bold),),
+          const Text("Slim Track",style: TextStyle(fontSize: 35,fontWeight: FontWeight.bold),),
           SizedBox(height: height*0.06,),
 
-          Text("Track your weight",style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),),
-          Text("and Stay healthy",style: TextStyle(fontSize: 19,fontWeight: FontWeight.bold),),
+          const Text("Track your weight",style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),),
+          const Text("and Stay healthy",style: TextStyle(fontSize: 19,fontWeight: FontWeight.bold),),
           SizedBox(height: height*0.06,),
 
-          MyAnimatedButton(),
+          MyAnimatedButton( ontap: (){
+            Get.to(() => const LoginPage());
+          },firstText: "Get Started",secondText: "Getting Started...",),
         ],
       )
     );

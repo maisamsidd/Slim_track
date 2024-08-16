@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 import 'package:slim_track/Resources/App_colors.dart/app_colors.dart';
 
-class MyAnimatedButton extends StatefulWidget {
+class MyAnimatedButtonAuth  extends StatefulWidget {
   String firstText;
   String secondText;
   void Function() ontap;
   
-   MyAnimatedButton({
+   MyAnimatedButtonAuth({
     super.key,
     required this.firstText,
     required this.secondText,
@@ -16,10 +16,10 @@ class MyAnimatedButton extends StatefulWidget {
   });
 
   @override
-  State<MyAnimatedButton> createState() => _MyAnimatedButtonState();
+  State<MyAnimatedButtonAuth> createState() => _MyAnimatedButtonAuthState();
 }
 
-class _MyAnimatedButtonState extends State<MyAnimatedButton> {
+class _MyAnimatedButtonAuthState extends State<MyAnimatedButtonAuth> {
   bool isSignedin = false;
  
   @override
