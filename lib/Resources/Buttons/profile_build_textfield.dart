@@ -3,12 +3,16 @@ import 'package:slim_track/Resources/App_colors.dart/app_colors.dart';
 
 class ProfileBuildTextButton extends StatelessWidget {
   final String text;
-  const ProfileBuildTextButton({super.key, required this.text});
+  final bool isSelected;
+  const ProfileBuildTextButton({super.key, required this.text,required this.isSelected});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        
+
+      },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
         child: Container(

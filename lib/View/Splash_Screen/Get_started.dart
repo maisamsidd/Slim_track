@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:slim_track/Controller/Splash_services/splash_screen.dart';
 import 'package:slim_track/Resources/App_colors.dart/app_colors.dart';
 import 'package:slim_track/Resources/Buttons/Animated_button.dart';
-import 'package:slim_track/View/Authentication/Login_Page.dart';
+import 'package:slim_track/View/Authentication/Signup_Page.dart';
 
 class GetStarted extends StatefulWidget {
   const GetStarted({super.key});
@@ -43,7 +43,7 @@ class _GetStartedState extends State<GetStarted> {
           SizedBox(height: height*0.06,),
 
           MyAnimatedButton( ontap: (){
-            Get.to(() => const LoginPage());
+            Get.to(() => const SignupPage());
           },firstText: "Get Started",secondText: "Getting Started...",),
         ],
       )

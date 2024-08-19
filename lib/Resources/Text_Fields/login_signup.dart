@@ -1,16 +1,26 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+
 import 'package:slim_track/Resources/App_colors.dart/app_colors.dart';
 
 class MyLoginSignUpTextField extends StatelessWidget {
   final String hintText;
+  final obscureText;
   final TextEditingController controller;
-   const MyLoginSignUpTextField({super.key, required this.hintText, required this.controller});
+   const MyLoginSignUpTextField({
+    super.key,
+    required this.hintText,
+    required this.controller,
+    required this.obscureText
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
   padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
   child: TextFormField(
+    controller: controller,
+    obscureText: obscureText,
     decoration: InputDecoration(
       hintText: hintText,
       border: OutlineInputBorder(

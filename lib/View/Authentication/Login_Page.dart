@@ -1,16 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:slim_track/Resources/App_colors.dart/app_colors.dart';
 import 'package:slim_track/Resources/Buttons/Animated_button.dart';
 import 'package:slim_track/Resources/Text_Fields/login_signup.dart';
-import 'package:slim_track/View/Authentication/Profile_Build_Page.dart';
 import 'package:slim_track/View/Authentication/Signup_Page.dart';
+import 'package:slim_track/View/Ecommerce_page/Product_listing.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  
+   const LoginPage({super.key });
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -22,6 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   final auth = FirebaseAuth.instance;
   final formkey = GlobalKey<FormState>();
   bool isSignedin = false;
+  final firestore = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
@@ -39,8 +40,8 @@ class _LoginPageState extends State<LoginPage> {
               const Text("Log in",style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),),
               SizedBox(height: height*0.03,),
           
-               MyLoginSignUpTextField(hintText: "Username",controller: emailController,),
-               MyLoginSignUpTextField(hintText: "Password",controller: passwordController,),
+               MyLoginSignUpTextField(hintText: "Username",controller: emailController,obscureText: false,),
+               MyLoginSignUpTextField(hintText: "Password",controller: passwordController,obscureText: true,),
           
               TextButton(onPressed: (){}, child: const  Text("Forgot your password?",
               style: TextStyle(color :AppColors.lite_green,fontSize: 16,fontWeight: FontWeight.bold),)),
@@ -49,8 +50,9 @@ class _LoginPageState extends State<LoginPage> {
               MyAnimatedButton(ontap: (){
           
                 if(formkey.currentState!.validate()){
-                  auth.signInWithEmailAndPassword(email: emailController.text, password: passwordController.text).then((value){
-                    Get.to(() => const ProfileBuildPage());
+                  auth.signInWithEmailAndPassword(email: emailController.text.toString(), password: passwordController.text.toString()).then((value){
+                    Get.to(()=> const ProductListing());
+                   
                   }).onError((e,stackTrace){
                     Get.snackbar("Error", "$e");
                   });

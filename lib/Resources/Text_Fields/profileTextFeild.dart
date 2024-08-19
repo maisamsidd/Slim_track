@@ -3,7 +3,8 @@ import 'package:slim_track/Resources/App_colors.dart/app_colors.dart';
 
 class Profiletextfeild extends StatelessWidget {
   final String hintText;
-  const Profiletextfeild({super.key, required this.hintText});
+  final  TextEditingController controller;
+  const Profiletextfeild({super.key, required this.hintText,required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -12,6 +13,7 @@ class Profiletextfeild extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
         child: TextFormField(
+          controller: controller,
           decoration: InputDecoration(
             hintText: hintText,
             border: OutlineInputBorder(
