@@ -10,6 +10,8 @@ import 'package:slim_track/View/Authentication/Profile_Build_Page.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
+  
+  get userId => null;
 
   @override
   State<SignupPage> createState() => _SignupPageState();
@@ -25,6 +27,7 @@ class _SignupPageState extends State<SignupPage> {
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
+    String userId = "";
     return Scaffold(
       backgroundColor: AppColors.lite_20_green,
       body: SingleChildScrollView(
@@ -53,7 +56,7 @@ class _SignupPageState extends State<SignupPage> {
                   String password = passwordController.text.toString();
                   if(formkey.currentState!.validate()){
                      auth.createUserWithEmailAndPassword(email: email, password: password).then((onValue){
-                          final userId = auth.currentUser!.uid;
+                          userId = auth.currentUser!.uid;
                           
 
                       
@@ -72,7 +75,10 @@ class _SignupPageState extends State<SignupPage> {
                 
                },firstText: "Sign up", secondText: "Signing up...",),
               TextButton(onPressed: (){
-                Get.to(() =>  const LoginPage());
+                Get.to(() => LoginPage()
+                  
+
+                );
           
               }, child: const  Text("Already have an account? Log in",
                   style: TextStyle(color :AppColors.lite_green,fontSize: 16,fontWeight: FontWeight.bold),)),

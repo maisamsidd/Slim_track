@@ -13,6 +13,8 @@ class FirstWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     return Container(
       width: 120,
       height: 40,
@@ -29,8 +31,8 @@ class FirstWidget extends StatelessWidget {
               child: Image(
                 image: AssetImage(imagePath),
                 fit: BoxFit.cover,
-                width: 28,  // Increased width
-                height: 28, // Increased height
+                width: 28,  
+                height: 28, 
               ),
             ),
           ),

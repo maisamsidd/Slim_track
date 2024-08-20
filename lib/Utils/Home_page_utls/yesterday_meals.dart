@@ -7,10 +7,10 @@ class YesterdayMeals extends StatefulWidget {
   String meals;
   String cals;
   YesterdayMeals({
-    Key? key,
+    super.key,
     required this.meals,
     required this.cals,
-  }) : super(key: key);
+  });
 
   @override
   State<YesterdayMeals> createState() => _YesterdayMealsState();
@@ -23,18 +23,18 @@ class _YesterdayMealsState extends State<YesterdayMeals> {
   padding: const EdgeInsets.symmetric(horizontal: 17),
   child: Row(
     children: [
-      Text(
+      const Text(
         'Yesterday:',
         style: TextStyle(
           fontSize: 20,fontWeight: FontWeight.bold,
           color: AppColors.black,
         ),
       ),
-      SizedBox(width: 10,),
+      const SizedBox(width: 10,),
       Expanded(
         child: Text(
           widget.meals,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 17,
             color: AppColors.lite_green,
           ),
@@ -42,7 +42,7 @@ class _YesterdayMealsState extends State<YesterdayMeals> {
       ),
       Text(
         widget.cals,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 17,
           color: AppColors.lite_green,
         ),

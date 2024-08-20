@@ -7,6 +7,7 @@ import 'package:slim_track/Resources/Buttons/Animated_button.dart';
 import 'package:slim_track/Resources/Text_Fields/login_signup.dart';
 import 'package:slim_track/View/Authentication/Signup_Page.dart';
 import 'package:slim_track/View/Ecommerce_page/Product_listing.dart';
+import 'package:slim_track/View/HomePage/Home_page.dart';
 
 class LoginPage extends StatefulWidget {
   
@@ -51,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
           
                 if(formkey.currentState!.validate()){
                   auth.signInWithEmailAndPassword(email: emailController.text.toString(), password: passwordController.text.toString()).then((value){
-                    Get.to(()=> const ProductListing());
+                    Get.to(()=>  HomePage());
                    
                   }).onError((e,stackTrace){
                     Get.snackbar("Error", "$e");

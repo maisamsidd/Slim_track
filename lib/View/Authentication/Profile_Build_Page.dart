@@ -5,7 +5,7 @@ import 'package:slim_track/Resources/App_colors.dart/app_colors.dart';
 import 'package:slim_track/Resources/Buttons/Animated_button.dart';
 import 'package:slim_track/Resources/Buttons/profile_build_textfield.dart';
 import 'package:slim_track/Resources/Text_Fields/profileTextFeild.dart';
-import 'package:slim_track/View/HomePage/personal_info.dart';
+import 'package:slim_track/View/Authentication/Login_Page.dart';
 
 class ProfileBuildPage extends StatefulWidget {
   final  userId;
@@ -125,6 +125,7 @@ class _ProfileBuildPageState extends State<ProfileBuildPage> {
               MyAnimatedButton(
                   ontap: () {
                     firestore.collection("user").doc(widget.userId).set({
+                      "userId": widget.userId,
                       "firstName": firstNameController.text,
                       "lastName": lastNameController.text,
                       "dateofBirth": dateofBirthController.text,
@@ -138,7 +139,7 @@ class _ProfileBuildPageState extends State<ProfileBuildPage> {
                        // Save selected goal to Firestore
                     });
 
-                    Get.to(() => const PersonalInfo());
+                    Get.to(() => LoginPage());
                   },
                   firstText: "Create Account",
                   secondText: "Creating..."),

@@ -5,12 +5,12 @@ class LogEntriesHome extends StatelessWidget {
   final String text;
   final TextEditingController foodController;
   final TextEditingController calController;
-  LogEntriesHome({
-    Key? key,
+  const LogEntriesHome({
+    super.key,
     required this.text,
     required this.foodController,
     required this.calController,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class LogEntriesHome extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 text,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18,
                                 ),
@@ -31,7 +31,7 @@ class LogEntriesHome extends StatelessWidget {
                             Container(
                               width: 175,
                               height: 50,
-                              margin: EdgeInsets.only(right: 8),
+                              margin: const EdgeInsets.only(right: 8),
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(20),
@@ -40,10 +40,10 @@ class LogEntriesHome extends StatelessWidget {
                                 ),
                               ),
                               child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8),
+                                padding: const EdgeInsets.symmetric(horizontal: 8),
                                 child: TextFormField(
                                   controller: foodController,
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     border: InputBorder.none,
                                     hintText: "eggs, milk, bread",
                                     hintStyle: TextStyle(
@@ -65,10 +65,10 @@ class LogEntriesHome extends StatelessWidget {
                                 ),
                               ),
                               child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8),
+                                padding: const EdgeInsets.symmetric(horizontal: 8),
                                 child: TextFormField(
                                   controller: calController,
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     border: InputBorder.none,
                                     hintText: "100",
                                     hintStyle: TextStyle(
