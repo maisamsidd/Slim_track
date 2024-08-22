@@ -52,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
           
                 if(formkey.currentState!.validate()){
                   auth.signInWithEmailAndPassword(email: emailController.text.toString(), password: passwordController.text.toString()).then((value){
-                    Get.to(()=>  HomePage());
+                    Get.to(()=>  const HomePage());
                    
                   }).onError((e,stackTrace){
                     Get.snackbar("Error", "$e");

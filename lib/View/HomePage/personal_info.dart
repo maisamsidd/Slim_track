@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:slim_track/Resources/App_colors.dart/app_colors.dart';
 import 'package:slim_track/Utils/profile_build_utils/first_widget.dart';
@@ -42,13 +43,13 @@ class _PersonalInfoState extends State<PersonalInfo> {
   }
 
   void _showUpdateDialog(String fieldName, String currentValue) {
-    TextEditingController _textFieldController = TextEditingController(text: currentValue);
+    TextEditingController textFieldController = TextEditingController(text: currentValue);
 
     Get.dialog(
       AlertDialog(
         title: Text('Update $fieldName'),
         content: TextField(
-          controller: _textFieldController,
+          controller: textFieldController,
           decoration: InputDecoration(hintText: 'Enter new $fieldName'),
         ),
         actions: [
@@ -60,7 +61,7 @@ class _PersonalInfoState extends State<PersonalInfo> {
           ),
           TextButton(
             onPressed: () {
-              _updateField(fieldName, _textFieldController.text);
+              _updateField(fieldName, textFieldController.text);
               Get.back(); // Close the dialog
             },
             child: const Text('Update'),
@@ -90,18 +91,21 @@ class _PersonalInfoState extends State<PersonalInfo> {
       onTap: () {
         _showUpdateDialog(label, _userInfo[fieldName] ?? 'N/A');
       },
-      child: Container(
-        width: 200,
-        height: 60,
+      child: Padding(
         padding: const EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey),
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        child: Center(
-          child: Text(
-            _userInfo[fieldName] ?? 'N/A',
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        child: Container(
+          width: 200,
+          height: 60,
+          padding: const EdgeInsets.all(8.0),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: Center(
+            child: Text(
+              _userInfo[fieldName] ?? 'N/A',
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
           ),
         ),
       ),
@@ -253,17 +257,20 @@ class _PersonalInfoState extends State<PersonalInfo> {
                               ],
                             ),
                           ),
-                          // New page starts here
                           Column(
                             children: [
-                              _buildInfoContainer('firstName', 'First Name'),
-                              _buildInfoContainer('lastName', 'Last Name'),
-                              _buildInfoContainer('goal', 'Goal'),
-                              _buildInfoContainer('height', 'Height'),
-                              _buildInfoContainer('weight', 'Weight'),
-                              _buildInfoContainer('dateofBirth', 'Date of Birth'),
-                              _buildInfoContainer('phoneNumber', 'Phone Number'),
-                              _buildInfoContainer('targetWeight', 'Target Weight'),
+                              SizedBox(height: 20,),
+                              Text("Click to update the field", style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),),
+                              SizedBox(height: 20,),
+                              
+                              _buildInfoContainer('firstName', 'firstName'),
+                              _buildInfoContainer('lastName', 'lastName'),
+                              _buildInfoContainer('goal', 'goal'),
+                              _buildInfoContainer('height', 'height'),
+                              _buildInfoContainer('weight', 'weight'),
+                              _buildInfoContainer('dateofBirth', 'dateofBirth'),
+                              _buildInfoContainer('phoneNumber', 'phoneNumber'),
+                              _buildInfoContainer('targetWeight', 'targetWeight'),
                             ],
                           ),
                         ],

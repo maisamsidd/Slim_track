@@ -75,7 +75,7 @@ class _SignupPageState extends State<SignupPage> {
                 
                },firstText: "Sign up", secondText: "Signing up...",),
               TextButton(onPressed: (){
-                Get.to(() => LoginPage()
+                Get.to(() => const LoginPage()
                   
 
                 );
