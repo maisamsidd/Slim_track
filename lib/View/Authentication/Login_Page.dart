@@ -6,7 +6,6 @@ import 'package:slim_track/Resources/App_colors.dart/app_colors.dart';
 import 'package:slim_track/Resources/Buttons/Animated_button.dart';
 import 'package:slim_track/Resources/Text_Fields/login_signup.dart';
 import 'package:slim_track/View/Authentication/Signup_Page.dart';
-import 'package:slim_track/View/Ecommerce_page/Product_listing.dart';
 import 'package:slim_track/View/HomePage/Home_page.dart';
 
 class LoginPage extends StatefulWidget {

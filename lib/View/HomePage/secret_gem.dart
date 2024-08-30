@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:slim_track/Resources/App_colors.dart/app_colors.dart';
-import 'package:slim_track/View/Ecommerce_page/Product_listing.dart';
 
 class SecretGem extends StatelessWidget {
   const SecretGem({super.key});
@@ -49,7 +47,6 @@ class SecretGem extends StatelessWidget {
             Center(
               child: InkWell(
                 onTap: (){
-                  Get.to(() => const ProductListing());
                 },
                 child: Container(
                   width: 200,

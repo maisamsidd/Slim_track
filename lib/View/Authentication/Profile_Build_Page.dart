@@ -5,7 +5,6 @@ import 'package:slim_track/Resources/App_colors.dart/app_colors.dart';
 import 'package:slim_track/Resources/Buttons/Animated_button.dart';
 import 'package:slim_track/Resources/Buttons/profile_build_textfield.dart';
 import 'package:slim_track/Resources/Text_Fields/profileTextFeild.dart';
-import 'package:slim_track/View/Authentication/Login_Page.dart';
 import 'package:slim_track/View/HomePage/Home_page.dart';
 
 class ProfileBuildPage extends StatefulWidget {

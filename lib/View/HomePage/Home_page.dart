@@ -7,6 +7,8 @@ import 'package:slim_track/Resources/Buttons/Animated_button.dart';
 import 'package:slim_track/Utils/Home_page_utls/Week_days.dart';
 import 'package:slim_track/Utils/Home_page_utls/log_entries_home.dart';
 import 'package:slim_track/Utils/Home_page_utls/yesterday_meals.dart';
+import 'package:slim_track/View/Authentication/Login_Page.dart';
+import 'package:slim_track/View/Ecommerce_page/Product_listing.dart';
 import 'package:slim_track/View/HomePage/personal_info.dart';
 
 class HomePage extends StatefulWidget {
@@ -28,21 +30,48 @@ class _HomePageState extends State<HomePage> {
   final drinksController = TextEditingController();
   final drinksCaloriesController = TextEditingController();
 
+  final currentWeightController = TextEditingController();
+  final previousController = TextEditingController();
+  final logController = TextEditingController();
+
   final fireStore = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
   Map<String, dynamic> _userInfo = {};
+  Map<String, dynamic> _userRoutine = {};
 
   @override
   void initState() {
     super.initState();
     _fetchUserInfo();
+    _fetchUserRoutine();
   }
 
-  Future<void> _fetchUserInfo() async {
+  @override
+  void dispose() { super.dispose(); }
+
+  Future<void> _fetchUserRoutine() async {
     try {
       final userId = auth.currentUser!.uid;
       DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
           await fireStore.collection("routine_foods").doc(userId).get();
+
+      if (documentSnapshot.exists) {
+        setState(() {
+          _userRoutine = documentSnapshot.data()!;
+        });
+      } else {
+        print('Document does not exist');
+      }
+    } catch (e) {
+      print('Error fetching user data: $e');
+    }
+  }
+   Future<void> _fetchUserInfo() async {
+    try {
+            final userId = auth.currentUser!.uid;
+
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+          await FirebaseFirestore.instance.collection("user").doc(userId).get();
 
       if (documentSnapshot.exists) {
         setState(() {
@@ -56,11 +85,24 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    final userId = auth.currentUser!.uid;
+    final userId = auth.currentUser?.uid;
+
+      if (userId == null) {
+    // Delay the navigation to avoid issues with widget rebuilding
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Get.offAll(() => const LoginPage());
+    });
+    return const Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
 
     return Scaffold(
       backgroundColor: AppColors.lite_20_green,
@@ -83,19 +125,39 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   const SizedBox(width: 10),
-                  const Column(
+                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Welcome, Maisam!",
-                        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                      Row(
+                        children: [
+                          const Text(
+                            "Hello, ",
+                            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            _userInfo['firstName'] ?? 'Loading...',
+                            style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
-                      Text(
+                      const Text(
                         "You are on your way to a good start",
                         style: TextStyle(fontSize: 16),
                       ),
+                      GestureDetector(onTap: (){
+
+                           auth.signOut();
+                                               
+                          Get.to(() => const LoginPage());
+                              
+                            
+                            
+                          },
+                            child: const Text("Logout",style: TextStyle(fontSize: 16,color: Colors.red),)),
                     ],
                   ),
+                  
                 ],
               ),
               const SizedBox(height: 20),
@@ -146,7 +208,7 @@ class _HomePageState extends State<HomePage> {
                                         child: TextField(
                                           decoration: InputDecoration(
                                             hintText: _userInfo['currentWeight'] ?? '70kg',
-                                            border: OutlineInputBorder(),
+                                            border: const OutlineInputBorder(),
                                           ),
                                         ),
                                       ),
@@ -158,7 +220,7 @@ class _HomePageState extends State<HomePage> {
                                         child: TextField(
                                           decoration: InputDecoration(
                                             hintText: _userInfo['previousWeight'] ?? '90kg',
-                                            border: OutlineInputBorder(),
+                                            border: const OutlineInputBorder(),
                                           ),
                                         ),
                                       ),
@@ -202,6 +264,7 @@ class _HomePageState extends State<HomePage> {
                                   child: SizedBox(
                                     height: 35,
                                     child: TextFormField(
+                                      controller: logController,
                                       decoration: const InputDecoration(
                                         hintText: 'Type',
                                         border: OutlineInputBorder(),
@@ -227,8 +290,12 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ],
                             ),
-                            child: const Center(
-                              child: Icon(Icons.shopping_cart, color: Colors.green, size: 50),
+                            child:  Center(
+                              child: GestureDetector(
+                                onTap: () {
+                                  Get.to(() =>  const ProductListing());
+                                },
+                                child: const Icon(Icons.shopping_cart, color: Colors.green, size: 40)),
                             ),
                           ),
                         ],
@@ -278,8 +345,8 @@ class _HomePageState extends State<HomePage> {
                         calController: breakFastCaloriesController,
                       ),
                       YesterdayMeals(
-                        meals: _userInfo['breakfast'] ?? 'Loading...',
-                        cals: _userInfo['caloriesBreakFast'] ?? 'Loading...',
+                        meals: _userRoutine['breakfast'] ?? 'Loading...',
+                        cals: _userRoutine['caloriesBreakFast'] ?? 'Loading...',
                       ),
                       const SizedBox(height: 10),
                       LogEntriesHome(
@@ -288,8 +355,8 @@ class _HomePageState extends State<HomePage> {
                         calController: lunchCaloriesController,
                       ),
                       YesterdayMeals(
-                        meals: _userInfo['lunch'] ?? 'Loading...',
-                        cals: _userInfo['caloriesLunch'] ?? 'Loading...',
+                        meals: _userRoutine['lunch'] ?? 'Loading...',
+                        cals: _userRoutine['caloriesLunch'] ?? 'Loading...',
                       ),
                       const SizedBox(height: 10),
                       LogEntriesHome(
@@ -298,8 +365,8 @@ class _HomePageState extends State<HomePage> {
                         calController: dinnerCaloriesController,
                       ),
                       YesterdayMeals(
-                        meals: _userInfo['dinner'] ?? 'Loading...',
-                        cals: _userInfo['caloriesDinner'] ?? 'Loading...',
+                        meals: _userRoutine['dinner'] ?? 'Loading...',
+                        cals: _userRoutine['caloriesDinner'] ?? 'Loading...',
                       ),
                       const SizedBox(height: 10),
                       LogEntriesHome(
@@ -308,8 +375,8 @@ class _HomePageState extends State<HomePage> {
                         calController: snacksCaloriesController,
                       ),
                       YesterdayMeals(
-                        meals: _userInfo['snacks'] ?? 'Loading...',
-                        cals: _userInfo['caloriesSnacks'] ?? 'Loading...',
+                        meals: _userRoutine['snacks'] ?? 'Loading...',
+                        cals: _userRoutine['caloriesSnacks'] ?? 'Loading...',
                       ),
                       const SizedBox(height: 10),
                       LogEntriesHome(
@@ -318,9 +385,53 @@ class _HomePageState extends State<HomePage> {
                         calController: drinksCaloriesController,
                       ),
                       YesterdayMeals(
-                        meals: _userInfo['drinks'] ?? 'Loading...',
-                        cals: _userInfo['caloriesDrinks'] ?? 'Loading...',
+                        meals: _userRoutine['drinks'] ?? 'Loading...',
+                        cals: _userRoutine['caloriesDrinks'] ?? 'Loading...',
                       ),
+                      const SizedBox(height: 20),
+
+
+                      MyAnimatedButton(ontap: (){
+                         var currentTime = DateTime.now();
+                          var formattedTime = "${currentTime.hour}:${currentTime.minute}";
+                          var formattedDate = "${currentTime.day}/${currentTime.month}/${currentTime.year}";
+
+                        fireStore.collection("routine_foods").doc(userId).set({
+                          "breakfast": breakFastController.text,
+                          "caloriesBreakFast": breakFastCaloriesController.text,
+                          "lunch": lunchController.text,
+                          "caloriesLunch": lunchCaloriesController.text,
+                          "dinner": dinnerController.text,
+                          "caloriesDinner": dinnerCaloriesController.text,
+                          "snacks": snacksController.text,
+                          "caloriesSnacks": snacksCaloriesController.text,
+                          "drinks": drinksController.text,
+                          "caloriesDrinks": drinksCaloriesController.text,
+                          'logWeight' : logController.text,
+
+                          
+                        });
+                         fireStore.collection("routine_foods").doc(userId).collection("data").add({
+                           "breakfast": breakFastController.text,
+                          "caloriesBreakFast": breakFastCaloriesController.text,
+                          "lunch": lunchController.text,
+                          "caloriesLunch": lunchCaloriesController.text,
+                          "dinner": dinnerController.text,
+                          "caloriesDinner": dinnerCaloriesController.text,
+                          "snacks": snacksController.text,
+                          "caloriesSnacks": snacksCaloriesController.text,
+                          "drinks": drinksController.text,
+                          "caloriesDrinks": drinksCaloriesController.text,
+                          'logWeight' : logController.text,
+                          'date' : formattedDate,
+                          'time' : formattedTime,
+                         });
+                         
+
+                          
+                       
+
+                      },firstText: "Add",secondText: "Adding...",),
                       const SizedBox(height: 20),
                     ],
                   ),

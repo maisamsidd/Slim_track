@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:slim_track/Resources/App_colors.dart/app_colors.dart';
 import 'package:slim_track/Utils/profile_build_utils/first_widget.dart';
@@ -259,9 +258,9 @@ class _PersonalInfoState extends State<PersonalInfo> {
                           ),
                           Column(
                             children: [
-                              SizedBox(height: 20,),
-                              Text("Click to update the field", style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),),
-                              SizedBox(height: 20,),
+                              const SizedBox(height: 20,),
+                              const Text("Click to update the field", style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),),
+                              const SizedBox(height: 20,),
                               
                               _buildInfoContainer('firstName', 'firstName'),
                               _buildInfoContainer('lastName', 'lastName'),
