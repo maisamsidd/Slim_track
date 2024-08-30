@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:slim_track/Model/UserModel/cart_model.dart';
 import 'package:slim_track/Resources/App_colors.dart/app_colors.dart';
 import 'package:slim_track/Resources/Buttons/Animated_button.dart';
-import 'package:slim_track/View/Ecommerce_page/Payment_paypal/paypal_payment.dart';
 
 class CartListing extends StatefulWidget {
   const CartListing({super.key});
@@ -67,7 +66,7 @@ class _CartListingState extends State<CartListing> {
             subtotal = 0.0;
             for (var item in cartItems) {
               var cartItem = item['model'] as CartModel;
-              subtotal += cartItem.price! * cartItem.quantity!;
+              subtotal += cartItem.fixedPrice! * cartItem.quantity!;
             }
 
             double tax = subtotal * taxRate;
@@ -181,15 +180,7 @@ class _CartListingState extends State<CartListing> {
                                                     style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                                                   ),
                                                   const SizedBox(width: 10),
-                                                  GestureDetector(
-                                                    onTap: () async {
-                                                      deleteItem();
-                                                    },
-                                                    child: const Icon(
-                                                      Icons.delete,
-                                                      size: 30,
-                                                    ),
-                                                  ),
+                                                  
                                                 ],
                                               ),
                                             ),
@@ -229,13 +220,22 @@ class _CartListingState extends State<CartListing> {
                                                       size: 40,
                                                     ),
                                                   ),
-                                                  const SizedBox(width: 20),
-                                                  Text(
-                                                    cartItem.price!.toStringAsFixed(2).toString(),
-                                                    style: const TextStyle(
-                                                      fontSize: 25,
-                                                      color: AppColors.black,
-                                                      fontWeight: FontWeight.bold,
+                                                  const SizedBox(width: 40),
+                                                  // Text(
+                                                  //   cartItem.price!.toStringAsFixed(2).toString(),
+                                                  //   style: const TextStyle(
+                                                  //     fontSize: 25,
+                                                  //     color: AppColors.black,
+                                                  //     fontWeight: FontWeight.bold,
+                                                  //   ),
+                                                  // ),
+                                                  GestureDetector(
+                                                    onTap: () async {
+                                                      deleteItem();
+                                                    },
+                                                    child: const Icon(
+                                                      Icons.delete,
+                                                      size: 30,
                                                     ),
                                                   ),
                                                 ],
@@ -255,7 +255,7 @@ class _CartListingState extends State<CartListing> {
                     },
                   ),
                 ),
-                Container(
+                SizedBox(
                   height: height * 0.41,
                   width: width * 0.8,
                   child: Column(
@@ -329,8 +329,8 @@ class _CartListingState extends State<CartListing> {
                                 //   "allowed_payment_method":
                                 //       "INSTANT_FUNDING_SOURCE"
                                 // },
-                                "item_list": {
-                                  "items": [
+                                "item_list": const {
+                                  "items": const [
                                     {
                                       "name": "A demo product",
                                       "quantity": 1,
@@ -340,7 +340,7 @@ class _CartListingState extends State<CartListing> {
                                   ],
 
                                   // shipping address is not required though
-                                  "shipping_address": {
+                                  "shipping_address": const {
                                     "recipient_name": "Jane Foster",
                                     "line1": "Travis County",
                                     "line2": "",
