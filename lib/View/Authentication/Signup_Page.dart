@@ -64,7 +64,7 @@ class _SignupPageState extends State<SignupPage> {
                         "email": email,
                         "password": password
                       });
-                    Get.to(() => ProfileBuildPage(userId: userId,email: email,));
+                    Get.to(() => ProfileBuildPage());
                   }).onError((e, stackTrace){
                     Get.snackbar("Error", "$e");
                   });

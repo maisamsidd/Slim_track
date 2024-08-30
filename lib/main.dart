@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:slim_track/View/HomePage/Home_page.dart';
-import 'package:slim_track/View/Products_page/products_listing.dart';
 import 'package:slim_track/firebase_options.dart';
 
 void main() async {

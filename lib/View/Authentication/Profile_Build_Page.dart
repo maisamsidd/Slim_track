@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:slim_track/Resources/App_colors.dart/app_colors.dart';
@@ -8,10 +9,9 @@ import 'package:slim_track/Resources/Text_Fields/profileTextFeild.dart';
 import 'package:slim_track/View/HomePage/Home_page.dart';
 
 class ProfileBuildPage extends StatefulWidget {
-  final  userId;
-  final email;
+  
 
-  const ProfileBuildPage({super.key,  required this.userId, required this.email});
+  const ProfileBuildPage({super.key});
 
   @override
   _ProfileBuildPageState createState() => _ProfileBuildPageState();
@@ -30,8 +30,13 @@ class _ProfileBuildPageState extends State<ProfileBuildPage> {
 
   String selectedGoal = 'Lose weight'; // Default goal selection
 
+  final auth = FirebaseAuth.instance;
+  
+
   @override
   Widget build(BuildContext context) {
+    final userId = auth.currentUser!.uid;
+    final email = auth.currentUser!.email;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: AppColors.lite_20_green,
@@ -124,8 +129,8 @@ class _ProfileBuildPageState extends State<ProfileBuildPage> {
               SizedBox(height: height * 0.05),
               MyAnimatedButton(
                   ontap: () {
-                    firestore.collection("user").doc(widget.userId).set({
-                      "userId": widget.userId,
+                    firestore.collection("user").doc(userId).set({
+                      "userId": userId,
                       "firstName": firstNameController.text,
                       "lastName": lastNameController.text,
                       "dateofBirth": dateofBirthController.text,
@@ -135,7 +140,8 @@ class _ProfileBuildPageState extends State<ProfileBuildPage> {
                       "weight": weightController.text,
                       "targetWeight": targetWeightController.text,
                       "goal": selectedGoal,
-                      "email": widget.email
+                      "email": email,
+                      "currentWeight": "0",
                        // Save selected goal to Firestore
                     });
 

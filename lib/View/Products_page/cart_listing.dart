@@ -330,7 +330,7 @@ class _CartListingState extends State<CartListing> {
                                 //       "INSTANT_FUNDING_SOURCE"
                                 // },
                                 "item_list": const {
-                                  "items": const [
+                                  "items": [
                                     {
                                       "name": "A demo product",
                                       "quantity": 1,
@@ -340,7 +340,7 @@ class _CartListingState extends State<CartListing> {
                                   ],
 
                                   // shipping address is not required though
-                                  "shipping_address": const {
+                                  "shipping_address": {
                                     "recipient_name": "Jane Foster",
                                     "line1": "Travis County",
                                     "line2": "",

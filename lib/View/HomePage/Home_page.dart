@@ -10,6 +10,7 @@ import 'package:slim_track/Utils/Home_page_utls/yesterday_meals.dart';
 import 'package:slim_track/View/Authentication/Login_Page.dart';
 import 'package:slim_track/View/Ecommerce_page/Product_listing.dart';
 import 'package:slim_track/View/HomePage/personal_info.dart';
+import 'package:slim_track/View/Products_page/products_listing.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -92,18 +93,23 @@ class _HomePageState extends State<HomePage> {
     double height = MediaQuery.of(context).size.height;
     final userId = auth.currentUser?.uid;
 
+
       if (userId == null) {
     // Delay the navigation to avoid issues with widget rebuilding
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Get.offAll(() => const LoginPage());
     });
-    return const Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
+  
   }
+    
+  
+    void logWeight()async{
+     await fireStore.collection("user").doc(userId).update({
+      "currentWeight" : logController.text,
+    });
 
+  }
+  
     return Scaffold(
       backgroundColor: AppColors.lite_20_green,
       body: SafeArea(
@@ -205,24 +211,14 @@ class _HomePageState extends State<HomePage> {
                                       SizedBox(
                                         width: 80,
                                         height: 40,
-                                        child: TextField(
-                                          decoration: InputDecoration(
-                                            hintText: _userInfo['currentWeight'] ?? '70kg',
-                                            border: const OutlineInputBorder(),
-                                          ),
-                                        ),
+                                        child: Text(_userInfo['currentWeight'] ?? 'Loading...' + " Kg", style: TextStyle(fontSize: 18,color: AppColors.lite_green),)
                                       ),
                                       const SizedBox(height: 10),
                                       const Text('Previous weight', style: TextStyle(fontSize: 17)),
                                       SizedBox(
                                         width: 80,
                                         height: 40,
-                                        child: TextField(
-                                          decoration: InputDecoration(
-                                            hintText: _userInfo['previousWeight'] ?? '90kg',
-                                            border: const OutlineInputBorder(),
-                                          ),
-                                        ),
+                                        child: Text( _userInfo['weight'] ?? 'Loading...' + " Kg", style: TextStyle(fontSize: 18,color: AppColors.lite_green),)
                                       ),
                                     ],
                                   ),
@@ -293,7 +289,7 @@ class _HomePageState extends State<HomePage> {
                             child:  Center(
                               child: GestureDetector(
                                 onTap: () {
-                                  Get.to(() =>  const ProductListing());
+                                  Get.to(() =>   ListingOfProducts());
                                 },
                                 child: const Icon(Icons.shopping_cart, color: Colors.green, size: 40)),
                             ),
@@ -392,6 +388,7 @@ class _HomePageState extends State<HomePage> {
 
 
                       MyAnimatedButton(ontap: (){
+                         logWeight();
                          var currentTime = DateTime.now();
                           var formattedTime = "${currentTime.hour}:${currentTime.minute}";
                           var formattedDate = "${currentTime.day}/${currentTime.month}/${currentTime.year}";
@@ -407,7 +404,7 @@ class _HomePageState extends State<HomePage> {
                           "caloriesSnacks": snacksCaloriesController.text,
                           "drinks": drinksController.text,
                           "caloriesDrinks": drinksCaloriesController.text,
-                          'logWeight' : logController.text,
+                          'currentWeight' : logController.text,
 
                           
                         });
@@ -422,14 +419,11 @@ class _HomePageState extends State<HomePage> {
                           "caloriesSnacks": snacksCaloriesController.text,
                           "drinks": drinksController.text,
                           "caloriesDrinks": drinksCaloriesController.text,
-                          'logWeight' : logController.text,
+                          'currentWeight' : logController.text,
                           'date' : formattedDate,
                           'time' : formattedTime,
                          });
-                         
 
-                          
-                       
 
                       },firstText: "Add",secondText: "Adding...",),
                       const SizedBox(height: 20),
@@ -443,5 +437,8 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+
+    
   }
+  
 }

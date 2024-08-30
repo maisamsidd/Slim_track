@@ -68,7 +68,7 @@ class _ListingOfProductsState extends State<ListingOfProducts> {
               alignment: Alignment.centerRight,
               child: InkWell(
                   onTap: () {
-                    Get.to(() => CartListing());
+                    Get.to(() => const CartListing());
                   },
                   child: const Icon(Icons.shopping_cart,
                       color: AppColors.lite_green, size: 30)),
