@@ -2,11 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:slim_track/Model/UserModel/cart_model.dart';
 import 'package:slim_track/Model/UserModel/product_listing.dart';
 import 'package:slim_track/Resources/App_colors.dart/app_colors.dart';
 import 'package:slim_track/Resources/Buttons/buy_and_cart_button.dart';
-import 'package:slim_track/View/Ecommerce_page/product_cart.dart';
 import 'package:slim_track/View/Products_page/cart_listing.dart';
 
 class ListingOfProducts extends StatefulWidget {

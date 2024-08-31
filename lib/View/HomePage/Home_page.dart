@@ -11,6 +11,8 @@ import 'package:slim_track/View/Authentication/Login_Page.dart';
 import 'package:slim_track/View/Ecommerce_page/Product_listing.dart';
 import 'package:slim_track/View/HomePage/personal_info.dart';
 import 'package:slim_track/View/Products_page/products_listing.dart';
+import 'package:lottie/lottie.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -92,6 +94,7 @@ class _HomePageState extends State<HomePage> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     final userId = auth.currentUser?.uid;
+    
 
 
       if (userId == null) {
@@ -107,6 +110,26 @@ class _HomePageState extends State<HomePage> {
      await fireStore.collection("user").doc(userId).update({
       "currentWeight" : logController.text,
     });
+
+  }
+  int currentWeight = 80;
+  int previousWeight = 66;
+
+  Widget getArrow(){
+    if(currentWeight>previousWeight){
+      return Container(
+        width: 100,
+        height: 100,
+        decoration: BoxDecoration(
+        ),
+        child: Expanded(child: Lottie.asset("assets/Animations/arrow_up.json",fit: BoxFit.fill)));
+    }
+    else{
+      return Container(
+        width: 100,
+        height: 100,
+        child: Lottie.asset("assets/Animations/arrow_down.json"));
+    }
 
   }
   
@@ -175,7 +198,7 @@ class _HomePageState extends State<HomePage> {
                     Flexible(
                       flex: 5,
                       child: Container(
-                        height: 220,
+                        height: 230,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(15),
@@ -201,8 +224,12 @@ class _HomePageState extends State<HomePage> {
                             const SizedBox(height: 10),
                             Row(
                               children: [
-                                const Icon(Icons.show_chart, color: Colors.green, size: 50),
-                                const SizedBox(width: 53),
+                                getArrow(),
+
+                                //If value is greater than weight then use assets/Animations/arrow_up,
+                                //  else assets/Animations/arrow_down
+                                
+                                const SizedBox(width: 5),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -211,14 +238,14 @@ class _HomePageState extends State<HomePage> {
                                       SizedBox(
                                         width: 80,
                                         height: 40,
-                                        child: Text(_userInfo['currentWeight'] ?? 'Loading...' + " Kg", style: TextStyle(fontSize: 18,color: AppColors.lite_green),)
+                                        child: Text(_userInfo['currentWeight'] ?? 'Loading...' " Kg", style: const TextStyle(fontSize: 18,color: AppColors.lite_green),)
                                       ),
                                       const SizedBox(height: 10),
                                       const Text('Previous weight', style: TextStyle(fontSize: 17)),
                                       SizedBox(
                                         width: 80,
                                         height: 40,
-                                        child: Text( _userInfo['weight'] ?? 'Loading...' + " Kg", style: TextStyle(fontSize: 18,color: AppColors.lite_green),)
+                                        child: Text( _userInfo['weight'] ?? 'Loading...' " Kg", style: const TextStyle(fontSize: 18,color: AppColors.lite_green),)
                                       ),
                                     ],
                                   ),
@@ -289,7 +316,7 @@ class _HomePageState extends State<HomePage> {
                             child:  Center(
                               child: GestureDetector(
                                 onTap: () {
-                                  Get.to(() =>   ListingOfProducts());
+                                  Get.to(() =>   const ListingOfProducts());
                                 },
                                 child: const Icon(Icons.shopping_cart, color: Colors.green, size: 40)),
                             ),
