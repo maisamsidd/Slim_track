@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:slim_track/Resources/App_colors.dart/app_colors.dart';
 import 'package:slim_track/Utils/profile_build_utils/first_widget.dart';
 import 'package:slim_track/Utils/profile_build_utils/second_widget.dart';
@@ -17,27 +21,60 @@ class PersonalInfo extends StatefulWidget {
 class _PersonalInfoState extends State<PersonalInfo> {
   final userId = FirebaseAuth.instance.currentUser!.uid;
   Map<String, dynamic> _userInfo = {};
+  Map<String, dynamic> _userRoutine = {};
+  int totalCals = 0; 
+   final ImagePicker _picker = ImagePicker(); // Image picker instance
+  String? _imageUrl; // To hold the selected image URL// Variable to hold the total calories
+
+  final auth = FirebaseAuth.instance;
+  final fireStore = FirebaseFirestore.instance;
 
   @override
   void initState() {
     super.initState();
     _fetchUserInfo();
+    _fetchUserRoutine();
   }
 
   Future<void> _fetchUserInfo() async {
     try {
       DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-          await FirebaseFirestore.instance.collection("user").doc(userId).get();
+          await fireStore.collection("user").doc(userId).get();
 
       if (documentSnapshot.exists) {
         setState(() {
           _userInfo = documentSnapshot.data()!;
         });
       } else {
-        print('Document does not exist');
+        print('User document does not exist');
       }
     } catch (e) {
       print('Error fetching user data: $e');
+    }
+  }
+
+  Future<void> _fetchUserRoutine() async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+          await fireStore.collection("routine_foods").doc(userId).get();
+
+      if (documentSnapshot.exists) {
+        setState(() {
+          _userRoutine = documentSnapshot.data()!;
+          // Calculate total calories here after fetching the data
+          int bfCals = int.tryParse(_userRoutine['caloriesBreakFast'] ?? '0') ?? 0;
+          int dinnerCals = int.tryParse(_userRoutine['caloriesDinner'] ?? '0') ?? 0;
+          int lunchCals = int.tryParse(_userRoutine['caloriesLunch'] ?? '0') ?? 0;
+          int snackCals = int.tryParse(_userRoutine['caloriesSnacks'] ?? '0') ?? 0;
+          int drinkCals = int.tryParse(_userRoutine['caloriesDrinks'] ?? '0') ?? 0;
+
+          totalCals = bfCals + dinnerCals + lunchCals + snackCals + drinkCals;
+        });
+      } else {
+        print('Routine document does not exist');
+      }
+    } catch (e) {
+      print('Error fetching routine data: $e');
     }
   }
 
@@ -71,7 +108,7 @@ class _PersonalInfoState extends State<PersonalInfo> {
   }
 
   void _updateField(String fieldName, String newValue) {
-    FirebaseFirestore.instance.collection('user').doc(userId).update({
+    fireStore.collection('user').doc(userId).update({
       fieldName: newValue,
     }).then((_) {
       setState(() {
@@ -84,6 +121,57 @@ class _PersonalInfoState extends State<PersonalInfo> {
           snackPosition: SnackPosition.BOTTOM);
     });
   }
+   Future<void> _pickAndUploadImage() async {
+    try {
+      final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+      if (image == null) return;
+
+      // Upload to Firebase Storage
+      final File file = File(image.path);
+      final storageRef = FirebaseStorage.instance.ref().child('profile_images/$userId.jpg');
+      final uploadTask = storageRef.putFile(file);
+      final snapshot = await uploadTask.whenComplete(() => {});
+
+      // Get the download URL
+      final downloadUrl = await snapshot.ref.getDownloadURL();
+
+      // Update Firestore with the image URL
+      await fireStore.collection('user').doc(userId).update({
+        'profileImageUrl': downloadUrl,
+      });
+
+      setState(() {
+        _imageUrl = downloadUrl; // Update the local variable to reflect the new image
+      });
+
+      Get.snackbar('Success', 'Profile image updated successfully!',
+          snackPosition: SnackPosition.BOTTOM);
+    } catch (e) {
+      print('Error uploading image: $e');
+      Get.snackbar('Error', 'Failed to upload profile image.',
+          snackPosition: SnackPosition.BOTTOM);
+    }
+  }
+
+  Widget _buildProfileImage() {
+    return GestureDetector(
+      onTap: _pickAndUploadImage,
+      child: CircleAvatar(
+        radius: 50,
+        backgroundColor: AppColors.lite_green,
+        backgroundImage: _imageUrl != null
+            ? NetworkImage(_imageUrl!) // Display uploaded image
+            : const AssetImage("assets/images/user_image.png") as ImageProvider, // Default image
+        child: _imageUrl == null
+            ? Padding(
+              padding: const EdgeInsets.symmetric(vertical: 70, horizontal: 67),
+              child:  Icon(Icons.add_a_photo, color: Colors.red),
+            ) // Camera icon if no image is uploaded
+            : null,
+      ),
+    );
+  }
+
 
   Widget _buildInfoContainer(String fieldName, String label) {
     return GestureDetector(
@@ -113,6 +201,12 @@ class _PersonalInfoState extends State<PersonalInfo> {
 
   @override
   Widget build(BuildContext context) {
+    final fireData = FirebaseFirestore.instance
+        .collection("routine_foods")
+        .doc(userId)
+        .collection("data")
+        .snapshots();
+
     return Scaffold(
       backgroundColor: AppColors.lite_20_green,
       body: SafeArea(
@@ -132,7 +226,7 @@ class _PersonalInfoState extends State<PersonalInfo> {
                       color: AppColors.lite_green,
                       borderRadius: BorderRadius.circular(50),
                     ),
-                    child: Image.asset("assets/images/user_image.png"),
+                    child: _buildProfileImage()
                   ),
                 ),
               ),
@@ -191,8 +285,12 @@ class _PersonalInfoState extends State<PersonalInfo> {
                                   ],
                                 ),
                                 const SizedBox(height: 20),
-                                const SecondWidget(
-                                    imagePath: "assets/images/cal.png"),
+                                SecondWidget(
+                                  imagePath: "assets/images/cal.png",
+                                  weightGoal: _userInfo['targetWeight'] ?? 'N/A',
+                                  starWeirght: _userInfo['weight'] ?? 'N/A', 
+                                  maxCals: totalCals.toString(), // Display total calories
+                                ),
                                 const SizedBox(height: 20),
                                 Container(
                                   width: 370,
@@ -236,41 +334,75 @@ class _PersonalInfoState extends State<PersonalInfo> {
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding:  const EdgeInsets.all(8.0),
                                   child: Center(
                                     child: Container(
                                       color: Colors.white,
-                                      child: Table(
-                                        children: <TableRow>[
-                                          tableRow,
-                                          tableRow,
-                                          tableRow,
-                                          tableRow,
-                                          tableRow,
-                                          tableRow,
+                                      child: Column(
+                                        children: [
+                                          StreamBuilder<QuerySnapshot>(
+                                            stream: fireData,
+                                            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                                              if (snapshot.hasError) {
+                                                return const Text("Something went wrong");
+                                              }
+                                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                                return const CircularProgressIndicator();
+                                              }
+                                              final data = snapshot.data?.docs;
+                                              if (data == null || data.isEmpty) {
+                                                return const Text("No data available");
+                                              }
+                                              return SingleChildScrollView(
+                                                scrollDirection: Axis.horizontal,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: DataTable(
+                                                    border: TableBorder.all(),
+                                                    columns: const [
+                                                      DataColumn(label: Text('Date')),
+                                                      DataColumn(label: Text('Log Weight')),
+                                                      DataColumn(label: Text('All Meals')),
+                                                      DataColumn(label: Text('Calories')),
+                                                    ],
+                                                    rows: data.map((doc) {
+                                                      final date = doc['date'] ?? 'N/A';
+                                                      final logWeight = doc['logWeight'] ?? 'N/A';
+                                                      final allMeals = doc['breakfast'] +" ,"+ doc["lunch"]+" ,"+ doc["dinner"]+" ,"+ doc["snacks"]+" ,"+ doc["drinks"]?? 'N/A';
+                                                      final calories = doc['caloriesDinner'] ?? 'N/A';
+                                                      final totalCalories = int.parse(doc['caloriesDinner'] ?? '0') + int.parse(doc['caloriesLunch'] ?? '0') + int.parse(doc['caloriesBreakFast'] ?? '0') + int.parse(doc['caloriesSnacks'] ?? '0') + int.parse(doc['caloriesDrinks'] ?? '0');    
+                                                      return DataRow(cells: [
+                                                        DataCell(Text(date)),
+                                                        DataCell(Text(logWeight)),
+                                                        DataCell(Expanded(child: Text(softWrap: true,allMeals))),
+                                                        DataCell(Text(totalCalories.toString())),
+                                                      ]);
+                                                    }).toList(),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ),
                                         ],
                                       ),
                                     ),
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           ),
-                          Column(
-                            children: [
-                              const SizedBox(height: 20,),
-                              const Text("Click to update the field", style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),),
-                              const SizedBox(height: 20,),
-                              
-                              _buildInfoContainer('firstName', 'firstName'),
-                              _buildInfoContainer('lastName', 'lastName'),
-                              _buildInfoContainer('goal', 'goal'),
-                              _buildInfoContainer('height', 'height'),
-                              _buildInfoContainer('weight', 'weight'),
-                              _buildInfoContainer('dateofBirth', 'dateofBirth'),
-                              _buildInfoContainer('phoneNumber', 'phoneNumber'),
-                              _buildInfoContainer('targetWeight', 'targetWeight'),
-                            ],
+                          SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                _buildInfoContainer('firstName', 'firstName'),
+                                _buildInfoContainer('lastName', 'lastName'),
+                                _buildInfoContainer('email', 'email'),
+                                _buildInfoContainer('phone', 'phone'),
+                                _buildInfoContainer('weight', 'weight'),
+                                _buildInfoContainer('height', 'height'),
+                                _buildInfoContainer('targetWeight', 'targetWeight'),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -284,49 +416,4 @@ class _PersonalInfoState extends State<PersonalInfo> {
       ),
     );
   }
-
-  final TableRow tableRow = const TableRow(
-    children: [
-      Padding(
-        padding: EdgeInsets.all(10.0),
-        child: Text(
-          "Date",
-          style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.lite_green),
-        ),
-      ),
-      Padding(
-        padding: EdgeInsets.all(10.0),
-        child: Text(
-          "Lbs",
-          style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.lite_green),
-        ),
-      ),
-      Padding(
-        padding: EdgeInsets.all(10.0),
-        child: Text(
-          "Meal",
-          style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.lite_green),
-        ),
-      ),
-      Padding(
-        padding: EdgeInsets.all(10.0),
-        child: Text(
-          "Exercise",
-          style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.lite_green),
-        ),
-      ),
-      Padding(
-        padding: EdgeInsets.all(10.0),
-        child: Text(
-          "Log",
-          style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.lite_green),
-        ),
-      ),
-    ],
-  );
 }

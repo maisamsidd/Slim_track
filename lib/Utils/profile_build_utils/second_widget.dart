@@ -1,13 +1,18 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+
 import 'package:flutter/material.dart';
 
 import 'package:slim_track/Resources/App_colors.dart/app_colors.dart';
 
 class SecondWidget extends StatelessWidget {
   final String imagePath;
+  final String maxCals;
+  final String starWeirght;
+  final String weightGoal;
   const SecondWidget({
     super.key,
     required this.imagePath,
+    required this.maxCals, required this.starWeirght, required this.weightGoal,
   });
 
   @override
@@ -44,17 +49,18 @@ class SecondWidget extends StatelessWidget {
                                                 style: TextStyle(
                                                   color: AppColors.lite_green,
                                                   fontSize: 18,
+                                                  fontWeight: FontWeight.bold
                                                 ),
                                                 softWrap: true,
                                                 overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
                                             const Spacer(),
-                                            const Padding(
-                                              padding: EdgeInsets.all(8.0),
+                                            Padding(
+                                              padding: const EdgeInsets.all(8.0),
                                               child: Text(
-                                                "1500",
-                                                style: TextStyle(
+                                                maxCals,
+                                                style: const TextStyle(
                                                   color: AppColors.lite_green,
                                                   fontSize: 18,
                                                 ),
@@ -67,25 +73,25 @@ class SecondWidget extends StatelessWidget {
                                         thickness: 1,
                                         color: AppColors.lite_green,
                                       ),
-                                      const Padding(
-                                        padding: EdgeInsets.all(8.0),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
                                         child: Row(
                                           children: [
-                                            Padding(
-                                              padding: EdgeInsets.all(8.0),
+                                            const Padding(
+                                              padding: EdgeInsets.symmetric(horizontal: 12),
                                               child: Text(
                                                 "Star weight",
                                                 style: TextStyle(
                                                   color: AppColors.lite_green,
-                                                  fontSize: 16,
+                                                  fontSize: 16,fontWeight: FontWeight.bold
                                                 ),
                                               ),
                                             ),
-                                            SizedBox(width: 10),
+                                            const SizedBox(width: 8),
                                             Flexible(
                                               child: Text(
-                                                "174 lb",
-                                                style: TextStyle(
+                                                "$starWeirght lb",
+                                                style: const TextStyle(
                                                   color: AppColors.lite_green,
                                                   fontSize: 16,
                                                 ),
@@ -93,21 +99,22 @@ class SecondWidget extends StatelessWidget {
                                                 overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
-                                            Padding(
+
+                                            const Padding(
                                               padding: EdgeInsets.all(8.0),
                                               child: Text(
                                                 "Weight goal",
                                                 style: TextStyle(
                                                   color: AppColors.lite_green,
-                                                  fontSize: 16,
+                                                  fontSize: 16,fontWeight: FontWeight.bold
                                                 ),
                                               ),
                                             ),
                                             Padding(
-                                              padding: EdgeInsets.all(8.0),
+                                              padding: const EdgeInsets.all(8.0),
                                               child: Text(
-                                                "174 lb",
-                                                style: TextStyle(
+                                                "$weightGoal lb",
+                                                style: const TextStyle(
                                                   color: AppColors.lite_green,
                                                   fontSize: 16,
                                                 ),

@@ -16,7 +16,7 @@ class FirstWidget extends StatelessWidget {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return Container(
-      width: 120,
+      width: 130,
       height: 40,
       decoration: BoxDecoration(
         color: AppColors.white,
@@ -26,7 +26,7 @@ class FirstWidget extends StatelessWidget {
       child: Row(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(7.0),
             child: Container(
               child: Image(
                 image: AssetImage(imagePath),
@@ -40,7 +40,7 @@ class FirstWidget extends StatelessWidget {
           Text(
             text,
             style: const TextStyle(
-              color: AppColors.lite_green,fontSize: 17
+              color: AppColors.lite_green,fontSize: 15
             ),
           ),
         ],

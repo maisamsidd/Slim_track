@@ -8,7 +8,6 @@ import 'package:slim_track/Utils/Home_page_utls/Week_days.dart';
 import 'package:slim_track/Utils/Home_page_utls/log_entries_home.dart';
 import 'package:slim_track/Utils/Home_page_utls/yesterday_meals.dart';
 import 'package:slim_track/View/Authentication/Login_Page.dart';
-import 'package:slim_track/View/Ecommerce_page/Product_listing.dart';
 import 'package:slim_track/View/HomePage/personal_info.dart';
 import 'package:slim_track/View/Products_page/products_listing.dart';
 import 'package:lottie/lottie.dart';
@@ -112,26 +111,27 @@ class _HomePageState extends State<HomePage> {
     });
 
   }
-  int currentWeight = 80;
-  int previousWeight = 66;
+  int currentWeight = int.parse(_userInfo['currentWeight'] ?? '0') ?? 0;
+  int previousWeight = int.parse(_userInfo['weight'] ?? '0');
 
   Widget getArrow(){
     if(currentWeight>previousWeight){
       return Container(
         width: 100,
         height: 100,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
         ),
         child: Expanded(child: Lottie.asset("assets/Animations/arrow_up.json",fit: BoxFit.fill)));
     }
     else{
-      return Container(
+      return SizedBox(
         width: 100,
         height: 100,
         child: Lottie.asset("assets/Animations/arrow_down.json"));
     }
 
   }
+
   
     return Scaffold(
       backgroundColor: AppColors.lite_20_green,
@@ -143,16 +143,17 @@ class _HomePageState extends State<HomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      Get.to(() => const PersonalInfo());
-                    },
-                    child: CircleAvatar(
-                      radius: 50,
-                      backgroundColor: AppColors.lite_green,
-                      child: Image.asset("assets/images/user_image.png"),
-                    ),
-                  ),
+                 GestureDetector(
+  onTap: () {
+    Get.to(() => const PersonalInfo());
+  },
+  child: CircleAvatar(
+    radius: 50,
+    backgroundImage: _userInfo['profileImageUrl'] != null
+        ? NetworkImage(_userInfo['profileImageUrl']!)
+        : AssetImage("assets/images/user_image.png") as ImageProvider,
+  ),
+),
                   const SizedBox(width: 10),
                    Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -238,14 +239,14 @@ class _HomePageState extends State<HomePage> {
                                       SizedBox(
                                         width: 80,
                                         height: 40,
-                                        child: Text(_userInfo['currentWeight'] ?? 'Loading...' " Kg", style: const TextStyle(fontSize: 18,color: AppColors.lite_green),)
+                                        child: Text(_userInfo['currentWeight'] ?? "o", style: const TextStyle(fontSize: 18,color: AppColors.lite_green),)
                                       ),
                                       const SizedBox(height: 10),
                                       const Text('Previous weight', style: TextStyle(fontSize: 17)),
                                       SizedBox(
                                         width: 80,
                                         height: 40,
-                                        child: Text( _userInfo['weight'] ?? 'Loading...' " Kg", style: const TextStyle(fontSize: 18,color: AppColors.lite_green),)
+                                        child: Text( _userInfo['weight'] ?? "0", style: const TextStyle(fontSize: 18,color: AppColors.lite_green),)
                                       ),
                                     ],
                                   ),
@@ -287,11 +288,18 @@ class _HomePageState extends State<HomePage> {
                                   child: SizedBox(
                                     height: 35,
                                     child: TextFormField(
+                                      keyboardType: TextInputType.number,
                                       controller: logController,
                                       decoration: const InputDecoration(
                                         hintText: 'Type',
                                         border: OutlineInputBorder(),
                                       ),
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Please enter current weight';
+                                        }
+                                        return null;
+                                      },
                                     ),
                                   ),
                                 ),
@@ -420,6 +428,19 @@ class _HomePageState extends State<HomePage> {
                           var formattedTime = "${currentTime.hour}:${currentTime.minute}";
                           var formattedDate = "${currentTime.day}/${currentTime.month}/${currentTime.year}";
 
+                            void logNullSafety() async {
+                            if (logController.text.isEmpty) {
+                              Get.snackbar(
+                                "Error",
+                                "Please enter your current weight",
+                                snackPosition: SnackPosition.BOTTOM,
+                                backgroundColor: Colors.red,
+                                colorText: Colors.white,
+                              );
+                              return;
+                            }}
+  
+
                         fireStore.collection("routine_foods").doc(userId).set({
                           "breakfast": breakFastController.text,
                           "caloriesBreakFast": breakFastCaloriesController.text,
@@ -447,9 +468,24 @@ class _HomePageState extends State<HomePage> {
                           "drinks": drinksController.text,
                           "caloriesDrinks": drinksCaloriesController.text,
                           'currentWeight' : logController.text,
+                          'logWeight' : logController.text,
                           'date' : formattedDate,
                           'time' : formattedTime,
                          });
+                         setState(() {
+                           breakFastController.clear();
+                           breakFastCaloriesController.clear();
+                           lunchController.clear();
+                           lunchCaloriesController.clear();
+                           dinnerController.clear();
+                           dinnerCaloriesController.clear();
+                           snacksController.clear();
+                           snacksCaloriesController.clear();
+                           drinksController.clear();
+                           drinksCaloriesController.clear();
+                           logController.clear();
+                         });
+                         Navigator.push(context, MaterialPageRoute(builder:  (context) => const HomePage()));
 
 
                       },firstText: "Add",secondText: "Adding...",),
