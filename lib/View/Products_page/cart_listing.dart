@@ -312,14 +312,14 @@ class _CartListingState extends State<CartListing> {
                                 "EHHtTDjnmTZATYBPiGzZC_AZUfMpMAzj2VZUeqlFUrRJA_C0pQNCxDccB5qoRQSEdcOnnKQhycuOWdP9",
                             returnURL: "https://samplesite.com/return",
                             cancelURL: "https://samplesite.com/cancel",
-                            transactions:  [
+                            transactions: const [
                               {
                                 "amount": {
-                                  "total": "$total",
+                                  "total": '10.12',
                                   "currency": "USD",
                                   "details": {
-                                    "subtotal": "$subtotal",
-                                    "shipping": '$shippingFee',
+                                    "subtotal": '10.12',
+                                    "shipping": '0',
                                     "shipping_discount": 0
                                   }
                                 },
@@ -329,7 +329,7 @@ class _CartListingState extends State<CartListing> {
                                 //   "allowed_payment_method":
                                 //       "INSTANT_FUNDING_SOURCE"
                                 // },
-                                "item_list": const {
+                                "item_list": {
                                   "items": [
                                     {
                                       "name": "A demo product",

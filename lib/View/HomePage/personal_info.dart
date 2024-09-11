@@ -163,8 +163,8 @@ class _PersonalInfoState extends State<PersonalInfo> {
             ? NetworkImage(_imageUrl!) // Display uploaded image
             : const AssetImage("assets/images/user_image.png") as ImageProvider, // Default image
         child: _imageUrl == null
-            ? Padding(
-              padding: const EdgeInsets.symmetric(vertical: 70, horizontal: 67),
+            ? const Padding(
+              padding: EdgeInsets.symmetric(vertical: 70, horizontal: 67),
               child:  Icon(Icons.add_a_photo, color: Colors.red),
             ) // Camera icon if no image is uploaded
             : null,
@@ -209,6 +209,7 @@ class _PersonalInfoState extends State<PersonalInfo> {
 
     return Scaffold(
       backgroundColor: AppColors.lite_20_green,
+     
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -309,12 +310,17 @@ class _PersonalInfoState extends State<PersonalInfo> {
                                               fontWeight: FontWeight.bold,
                                               color: AppColors.black)),
                                       const SizedBox(width: 10),
-                                      Text(
-                                        _userInfo['goal'] ?? 'N/A',
-                                        style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: AppColors.lite_green),
+                                      InkWell(
+                                        onTap: (){
+                                          Get.to(() => const SecretGem());
+                                        },
+                                        child: Text(
+                                          _userInfo['goal'] ?? 'N/A',
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: AppColors.lite_green),
+                                        ),
                                       ),
                                     ],
                                   ),

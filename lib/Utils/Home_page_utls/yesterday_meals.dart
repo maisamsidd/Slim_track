@@ -26,7 +26,7 @@ class _YesterdayMealsState extends State<YesterdayMeals> {
       const Text(
         'Yesterday:',
         style: TextStyle(
-          fontSize: 20,fontWeight: FontWeight.bold,
+          fontSize: 15,fontWeight: FontWeight.bold,
           color: AppColors.black,
         ),
       ),
@@ -35,15 +35,15 @@ class _YesterdayMealsState extends State<YesterdayMeals> {
         child: Text(
           widget.meals,
           style: const TextStyle(
-            fontSize: 17,
+            fontSize: 15,
             color: AppColors.lite_green,
           ),
         ),
       ),
       Text(
-        widget.cals,
+        "${widget.cals} Cals",
         style: const TextStyle(
-          fontSize: 17,
+          fontSize: 15,
           color: AppColors.lite_green,
         ),
       ),

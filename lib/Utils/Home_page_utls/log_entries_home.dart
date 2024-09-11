@@ -1,15 +1,18 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:slim_track/Resources/App_colors.dart/app_colors.dart';
 
 class LogEntriesHome extends StatelessWidget {
   final String text;
   final TextEditingController foodController;
   final TextEditingController calController;
-  const LogEntriesHome({
+  void Function() onPressed;
+   LogEntriesHome({
     super.key,
     required this.text,
     required this.foodController,
     required this.calController,
+    required this.onPressed,
   });
 
   @override
@@ -24,7 +27,7 @@ class LogEntriesHome extends StatelessWidget {
                                 text,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 18,
+                                  fontSize: 13,
                                 ),
                               ),
                             ),
@@ -78,6 +81,10 @@ class LogEntriesHome extends StatelessWidget {
                                   ),
                                 ),
                               ),
+                            ),
+                            IconButton(
+                              onPressed: onPressed,
+                              icon: const Icon(Icons.add,color: AppColors.lite_green,),
                             ),
                           ],
                         ),

@@ -115,7 +115,7 @@ class _HomePageState extends State<HomePage> {
   int previousWeight = int.parse(_userInfo['weight'] ?? '0');
 
   Widget getArrow(){
-    if(currentWeight>previousWeight){
+    if(currentWeight > previousWeight){
       return Container(
         width: 100,
         height: 100,
@@ -132,7 +132,6 @@ class _HomePageState extends State<HomePage> {
 
   }
 
-  
     return Scaffold(
       backgroundColor: AppColors.lite_20_green,
       body: SafeArea(
@@ -151,7 +150,7 @@ class _HomePageState extends State<HomePage> {
     radius: 50,
     backgroundImage: _userInfo['profileImageUrl'] != null
         ? NetworkImage(_userInfo['profileImageUrl']!)
-        : AssetImage("assets/images/user_image.png") as ImageProvider,
+        : const AssetImage("assets/images/user_image.png") as ImageProvider,
   ),
 ),
                   const SizedBox(width: 10),
@@ -199,7 +198,7 @@ class _HomePageState extends State<HomePage> {
                     Flexible(
                       flex: 5,
                       child: Container(
-                        height: 230,
+                        height: 225,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(15),
@@ -226,23 +225,20 @@ class _HomePageState extends State<HomePage> {
                             Row(
                               children: [
                                 getArrow(),
-
-                                //If value is greater than weight then use assets/Animations/arrow_up,
-                                //  else assets/Animations/arrow_down
                                 
                                 const SizedBox(width: 5),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      const Text('Current weight', style: TextStyle(fontSize: 17)),
+                                      const Text('Current weight', style: TextStyle(fontSize: 14)),
                                       SizedBox(
                                         width: 80,
                                         height: 40,
                                         child: Text(_userInfo['currentWeight'] ?? "o", style: const TextStyle(fontSize: 18,color: AppColors.lite_green),)
                                       ),
                                       const SizedBox(height: 10),
-                                      const Text('Previous weight', style: TextStyle(fontSize: 17)),
+                                      const Text('Previous weight', style: TextStyle(fontSize: 14)),
                                       SizedBox(
                                         width: 80,
                                         height: 40,
@@ -263,7 +259,7 @@ class _HomePageState extends State<HomePage> {
                       child: Column(
                         children: [
                           Container(
-                            height: 105,
+                            height: 120,
                             width: 120,
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -279,14 +275,16 @@ class _HomePageState extends State<HomePage> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
+                                const SizedBox(height: 2,),
                                 const Text(
                                   "Log Weight",
-                                  style: TextStyle(color: AppColors.black, fontSize: 18),
+                                  style: TextStyle(color: AppColors.black, fontSize: 15),
                                 ),
+                                const SizedBox(height: 5),
                                 Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding: const EdgeInsets.symmetric(horizontal: 15),
                                   child: SizedBox(
-                                    height: 35,
+                                    height: 40,
                                     child: TextFormField(
                                       keyboardType: TextInputType.number,
                                       controller: logController,
@@ -303,6 +301,12 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                 ),
+                               IconButton(
+                                icon: const Icon(Icons.add),
+                                onPressed: (){
+                                  fireStore.collection("user").doc(userId).update({ "currentWeight" : logController.text,});
+
+                               })
                               ],
                             ),
                           ),
@@ -352,7 +356,7 @@ class _HomePageState extends State<HomePage> {
                 elevation: 10,
                 borderRadius: BorderRadius.circular(20),
                 child: Container(
-                  width: width * 0.9,
+                  width: width * 0.95,
                   decoration: BoxDecoration(
                     color: AppColors.white,
                     borderRadius: BorderRadius.circular(20),
@@ -371,124 +375,95 @@ class _HomePageState extends State<HomePage> {
                       ),
                       const SizedBox(height: 8),
                       LogEntriesHome(
+                        onPressed: () {
+                          fireStore.collection("routine_foods").doc(userId).set({
+                            'breakfast': breakFastCaloriesController.text ?? "none",
+                            'caloriesBreakFast': breakFastCaloriesController.text ?? "0",
+                          });
+                          
+                        },
+
                         text: "Breakfast",
                         foodController: breakFastController,
                         calController: breakFastCaloriesController,
                       ),
                       YesterdayMeals(
-                        meals: _userRoutine['breakfast'] ?? 'Loading...',
-                        cals: _userRoutine['caloriesBreakFast'] ?? 'Loading...',
+                        meals: _userRoutine['breakfast'] ?? 'None',
+                        cals: _userRoutine['caloriesBreakFast'] ?? '0',
                       ),
                       const SizedBox(height: 10),
                       LogEntriesHome(
+                         onPressed: () {
+                          
+                          fireStore.collection("routine_foods").doc(userId).set({
+                            'lunch': lunchCaloriesController.text ?? "none",
+                            'caloriesLunch': lunchCaloriesController.text ?? "0",
+                          });
+                        },
                         text: "Lunch",
                         foodController: lunchController,
                         calController: lunchCaloriesController,
                       ),
                       YesterdayMeals(
-                        meals: _userRoutine['lunch'] ?? 'Loading...',
-                        cals: _userRoutine['caloriesLunch'] ?? 'Loading...',
+                        meals: _userRoutine['lunch'] ?? 'None',
+                        cals: _userRoutine['caloriesLunch'] ?? '0',
                       ),
                       const SizedBox(height: 10),
                       LogEntriesHome(
+                         onPressed: () {
+                           fireStore.collection("routine_foods").doc(userId).set({
+                            'dinner': dinnerCaloriesController ?? "none",
+                            'dinnersCalories': dinnerCaloriesController.text ?? "0",
+                          });
+                          
+                        },
                         text: "Dinner",
                         foodController: dinnerController,
                         calController: dinnerCaloriesController,
                       ),
                       YesterdayMeals(
-                        meals: _userRoutine['dinner'] ?? 'Loading...',
-                        cals: _userRoutine['caloriesDinner'] ?? 'Loading...',
+                        meals: _userRoutine['dinner'] ?? 'None',
+                        cals: _userRoutine['caloriesDinner'] ?? '0',
                       ),
                       const SizedBox(height: 10),
                       LogEntriesHome(
+                         onPressed: () {
+                          fireStore.collection("routine_foods").doc(userId).set({
+                            "snacks": snacksController.text ?? "none",
+                            "caloriesSnacks": snacksCaloriesController.text ?? "0",
+                            
+                          });
+                         
+                          
+                        },
                         text: "Snacks",
                         foodController: snacksController,
                         calController: snacksCaloriesController,
                       ),
                       YesterdayMeals(
-                        meals: _userRoutine['snacks'] ?? 'Loading...',
-                        cals: _userRoutine['caloriesSnacks'] ?? 'Loading...',
+                        meals: _userRoutine['snacks'] ?? 'None',
+                        cals: _userRoutine['caloriesSnacks'] ?? '0'
                       ),
                       const SizedBox(height: 10),
                       LogEntriesHome(
+                         onPressed: () {
+                          fireStore.collection("routine_foods").doc(userId).set({
+                            "drinks": drinksController.text ?? "none",
+                            "caloriesDrinks": drinksCaloriesController.text ?? "0",
+                            
+                          });
+                          
+                        },
                         text: "Drinks",
                         foodController: drinksController,
                         calController: drinksCaloriesController,
                       ),
                       YesterdayMeals(
-                        meals: _userRoutine['drinks'] ?? 'Loading...',
-                        cals: _userRoutine['caloriesDrinks'] ?? 'Loading...',
+                        meals: _userRoutine['drinks'] ?? 'None',
+                        cals: _userRoutine['caloriesDrinks'] ?? '0'
                       ),
-                      const SizedBox(height: 20),
+                      
 
-
-                      MyAnimatedButton(ontap: (){
-                         logWeight();
-                         var currentTime = DateTime.now();
-                          var formattedTime = "${currentTime.hour}:${currentTime.minute}";
-                          var formattedDate = "${currentTime.day}/${currentTime.month}/${currentTime.year}";
-
-                            void logNullSafety() async {
-                            if (logController.text.isEmpty) {
-                              Get.snackbar(
-                                "Error",
-                                "Please enter your current weight",
-                                snackPosition: SnackPosition.BOTTOM,
-                                backgroundColor: Colors.red,
-                                colorText: Colors.white,
-                              );
-                              return;
-                            }}
-  
-
-                        fireStore.collection("routine_foods").doc(userId).set({
-                          "breakfast": breakFastController.text,
-                          "caloriesBreakFast": breakFastCaloriesController.text,
-                          "lunch": lunchController.text,
-                          "caloriesLunch": lunchCaloriesController.text,
-                          "dinner": dinnerController.text,
-                          "caloriesDinner": dinnerCaloriesController.text,
-                          "snacks": snacksController.text,
-                          "caloriesSnacks": snacksCaloriesController.text,
-                          "drinks": drinksController.text,
-                          "caloriesDrinks": drinksCaloriesController.text,
-                          'currentWeight' : logController.text,
-
-                          
-                        });
-                         fireStore.collection("routine_foods").doc(userId).collection("data").add({
-                           "breakfast": breakFastController.text,
-                          "caloriesBreakFast": breakFastCaloriesController.text,
-                          "lunch": lunchController.text,
-                          "caloriesLunch": lunchCaloriesController.text,
-                          "dinner": dinnerController.text,
-                          "caloriesDinner": dinnerCaloriesController.text,
-                          "snacks": snacksController.text,
-                          "caloriesSnacks": snacksCaloriesController.text,
-                          "drinks": drinksController.text,
-                          "caloriesDrinks": drinksCaloriesController.text,
-                          'currentWeight' : logController.text,
-                          'logWeight' : logController.text,
-                          'date' : formattedDate,
-                          'time' : formattedTime,
-                         });
-                         setState(() {
-                           breakFastController.clear();
-                           breakFastCaloriesController.clear();
-                           lunchController.clear();
-                           lunchCaloriesController.clear();
-                           dinnerController.clear();
-                           dinnerCaloriesController.clear();
-                           snacksController.clear();
-                           snacksCaloriesController.clear();
-                           drinksController.clear();
-                           drinksCaloriesController.clear();
-                           logController.clear();
-                         });
-                         Navigator.push(context, MaterialPageRoute(builder:  (context) => const HomePage()));
-
-
-                      },firstText: "Add",secondText: "Adding...",),
                       const SizedBox(height: 20),
                     ],
                   ),
