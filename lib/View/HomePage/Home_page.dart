@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:slim_track/Resources/App_colors.dart/app_colors.dart';
-import 'package:slim_track/Resources/Buttons/Animated_button.dart';
 import 'package:slim_track/Utils/Home_page_utls/Week_days.dart';
 import 'package:slim_track/Utils/Home_page_utls/log_entries_home.dart';
 import 'package:slim_track/Utils/Home_page_utls/yesterday_meals.dart';
@@ -305,6 +304,7 @@ class _HomePageState extends State<HomePage> {
                                 icon: const Icon(Icons.add),
                                 onPressed: (){
                                   fireStore.collection("user").doc(userId).update({ "currentWeight" : logController.text,});
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
 
                                })
                               ],
@@ -375,18 +375,18 @@ class _HomePageState extends State<HomePage> {
                       ),
                       const SizedBox(height: 8),
                       LogEntriesHome(
-                        onPressed: () {
-                          fireStore.collection("routine_foods").doc(userId).set({
-                            'breakfast': breakFastCaloriesController.text ?? "none",
-                            'caloriesBreakFast': breakFastCaloriesController.text ?? "0",
-                          });
-                          
-                        },
+                    onPressed: () {
+                      fireStore.collection("routine_foods").doc(userId).update({
+                        'breakfast': breakFastController.text ?? "none",
+                        'caloriesBreakFast': breakFastCaloriesController.text ?? "0",
+                      });
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
+                    },
+                    text: "Breakfast",
+                    foodController: breakFastController,
+                    calController: breakFastCaloriesController,
+                  ),
 
-                        text: "Breakfast",
-                        foodController: breakFastController,
-                        calController: breakFastCaloriesController,
-                      ),
                       YesterdayMeals(
                         meals: _userRoutine['breakfast'] ?? 'None',
                         cals: _userRoutine['caloriesBreakFast'] ?? '0',
@@ -395,10 +395,11 @@ class _HomePageState extends State<HomePage> {
                       LogEntriesHome(
                          onPressed: () {
                           
-                          fireStore.collection("routine_foods").doc(userId).set({
-                            'lunch': lunchCaloriesController.text ?? "none",
+                          fireStore.collection("routine_foods").doc(userId).update({
+                            'lunch': lunchController.text ?? "none",
                             'caloriesLunch': lunchCaloriesController.text ?? "0",
                           });
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
                         },
                         text: "Lunch",
                         foodController: lunchController,
@@ -411,10 +412,11 @@ class _HomePageState extends State<HomePage> {
                       const SizedBox(height: 10),
                       LogEntriesHome(
                          onPressed: () {
-                           fireStore.collection("routine_foods").doc(userId).set({
-                            'dinner': dinnerCaloriesController ?? "none",
+                           fireStore.collection("routine_foods").doc(userId).update({
+                            'dinner': dinnerController.text ?? "none",
                             'dinnersCalories': dinnerCaloriesController.text ?? "0",
                           });
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
                           
                         },
                         text: "Dinner",
@@ -428,11 +430,12 @@ class _HomePageState extends State<HomePage> {
                       const SizedBox(height: 10),
                       LogEntriesHome(
                          onPressed: () {
-                          fireStore.collection("routine_foods").doc(userId).set({
+                          fireStore.collection("routine_foods").doc(userId).update({
                             "snacks": snacksController.text ?? "none",
                             "caloriesSnacks": snacksCaloriesController.text ?? "0",
                             
                           });
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
                          
                           
                         },
@@ -447,11 +450,12 @@ class _HomePageState extends State<HomePage> {
                       const SizedBox(height: 10),
                       LogEntriesHome(
                          onPressed: () {
-                          fireStore.collection("routine_foods").doc(userId).set({
+                          fireStore.collection("routine_foods").doc(userId).update({
                             "drinks": drinksController.text ?? "none",
                             "caloriesDrinks": drinksCaloriesController.text ?? "0",
                             
                           });
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
                           
                         },
                         text: "Drinks",
