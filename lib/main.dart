@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:slim_track/View/HomePage/Home_page.dart';
+import 'package:slim_track/Utils/Bottom_nav_bar/bottom_nav_bar.dart';
 import 'package:slim_track/firebase_options.dart';
 
 void main() async {
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return   const GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      home: MyBottomNavBar(),
     );
   }
 }

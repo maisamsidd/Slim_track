@@ -48,6 +48,7 @@ class _ListingOfProductsState extends State<ListingOfProducts> {
           image: "assets/images/tea_bag.png",
           bags: 1),
     ];
+
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
@@ -63,14 +64,57 @@ class _ListingOfProductsState extends State<ListingOfProducts> {
         actions: [
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: InkWell(
-                  onTap: () {
-                    Get.to(() => const CartListing());
-                  },
-                  child: const Icon(Icons.shopping_cart,
-                      color: AppColors.lite_green, size: 30)),
+            child: StreamBuilder(
+              stream: fireStore
+                  .collection("cartItems")
+                  .doc(userId)
+                  .collection("items")
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return IconButton(
+                    icon: const Icon(Icons.shopping_cart, color: AppColors.lite_green),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => const CartListing()),
+                      );
+                    },
+                  );
+                }
+                var itemCount = snapshot.data!.docs.length;
+
+                return Stack(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.shopping_cart, color: AppColors.lite_green, size: 22),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => const CartListing()),
+                        );
+                      },
+                    ),
+                    if (itemCount > 0)
+                      Positioned(
+                        right: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(5),
+                          decoration: const BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Text(
+                            itemCount.toString(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              },
             ),
           )
         ],
@@ -116,8 +160,7 @@ class _ListingOfProductsState extends State<ListingOfProducts> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 30, horizontal: 10),
+                              padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
                               child: SizedBox(
                                 width: 80,
                                 height: 150,
@@ -131,8 +174,7 @@ class _ListingOfProductsState extends State<ListingOfProducts> {
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 30),
                                 child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Text(
@@ -161,74 +203,66 @@ class _ListingOfProductsState extends State<ListingOfProducts> {
                                     ),
                                     const Spacer(),
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Expanded(
                                           child: BuyAndCartButton(
                                             ontap: () {
                                               Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => UsePaypal(
-                            sandboxMode: true,
-                            clientId:
-                                "AW1TdvpSGbIM5iP4HJNI5TyTmwpY9Gv9dYw8_8yW5lYIbCqf326vrkrp0ce9TAqjEGMHiV3OqJM_aRT0",
-                            secretKey:
-                                "EHHtTDjnmTZATYBPiGzZC_AZUfMpMAzj2VZUeqlFUrRJA_C0pQNCxDccB5qoRQSEdcOnnKQhycuOWdP9",
-                            returnURL: "https://samplesite.com/return",
-                            cancelURL: "https://samplesite.com/cancel",
-                            transactions: const [
-                              {
-                                "amount": {
-                                  "total": '10.12',
-                                  "currency": "USD",
-                                  "details": {
-                                    "subtotal": '10.12',
-                                    "shipping": '0',
-                                    "shipping_discount": 0
-                                  }
-                                },
-                                "description":
-                                    "The payment transaction description.",
-                                // "payment_options": {
-                                //   "allowed_payment_method":
-                                //       "INSTANT_FUNDING_SOURCE"
-                                // },
-                                "item_list": {
-                                  "items": [
-                                    {
-                                      "name": "A demo product",
-                                      "quantity": 1,
-                                      "price": '10.12',
-                                      "currency": "USD"
-                                    }
-                                  ],
-
-                                  // shipping address is not required though
-                                  "shipping_address": {
-                                    "recipient_name": "Jane Foster",
-                                    "line1": "Travis County",
-                                    "line2": "",
-                                    "city": "Austin",
-                                    "country_code": "US",
-                                    "postal_code": "73301",
-                                    "phone": "+00000000",
-                                    "state": "Texas"
-                                  },
-                                }
-                              }
-                            ],
-                            note: "Contact us for any questions on your order.",
-                            onSuccess: (Map params) async {
-                              print("onSuccess: $params");
-                            },
-                            onError: (error) {
-                              print("onError: $error");
-                            },
-                            onCancel: (params) {
-                              print('cancelled: $params');
-                            }),
-                      ));
+                                                MaterialPageRoute(
+                                                  builder: (BuildContext context) => UsePaypal(
+                                                    sandboxMode: true,
+                                                    clientId: "AW1TdvpSGbIM5iP4HJNI5TyTmwpY9Gv9dYw8_8yW5lYIbCqf326vrkrp0ce9TAqjEGMHiV3OqJM_aRT0",
+                                                    secretKey: "EHHtTDjnmTZATYBPiGzZC_AZUfMpMAzj2VZUeqlFUrRJA_C0pQNCxDccB5qoRQSEdcOnnKQhycuOWdP9",
+                                                    returnURL: "https://samplesite.com/return",
+                                                    cancelURL: "https://samplesite.com/cancel",
+                                                    transactions: const [
+                                                      {
+                                                        "amount": {
+                                                          "total": '10.12',
+                                                          "currency": "USD",
+                                                          "details": {
+                                                            "subtotal": '10.12',
+                                                            "shipping": '0',
+                                                            "shipping_discount": 0
+                                                          }
+                                                        },
+                                                        "description": "The payment transaction description.",
+                                                        "item_list": {
+                                                          "items": [
+                                                            {
+                                                              "name": "A demo product",
+                                                              "quantity": 1,
+                                                              "price": '10.12',
+                                                              "currency": "USD"
+                                                            }
+                                                          ],
+                                                          "shipping_address": {
+                                                            "recipient_name": "Jane Foster",
+                                                            "line1": "Travis County",
+                                                            "line2": "",
+                                                            "city": "Austin",
+                                                            "country_code": "US",
+                                                            "postal_code": "73301",
+                                                            "phone": "+00000000",
+                                                            "state": "Texas"
+                                                          },
+                                                        }
+                                                      }
+                                                    ],
+                                                    note: "Contact us for any questions on your order.",
+                                                    onSuccess: (Map params) async {
+                                                      print("onSuccess: $params");
+                                                    },
+                                                    onError: (error) {
+                                                      print("onError: $error");
+                                                    },
+                                                    onCancel: (params) {
+                                                      print('cancelled: $params');
+                                                    },
+                                                  ),
+                                                ),
+                                              );
                                             },
                                             text: "Buy",
                                           ),
@@ -240,8 +274,7 @@ class _ListingOfProductsState extends State<ListingOfProducts> {
                                                   .collection("cartItems")
                                                   .doc(userId)
                                                   .collection("items")
-                                                  .where("title",
-                                                      isEqualTo: title)
+                                                  .where("title", isEqualTo: title)
                                                   .get();
 
                                               if (existingItem.docs.isEmpty) {
@@ -255,28 +288,32 @@ class _ListingOfProductsState extends State<ListingOfProducts> {
                                                   "image": image,
                                                   "price": price,
                                                   "bags": bags,
-                                                  "fixedPrice": fixedPrice
+                                                  "fixedPrice": fixedPrice,
                                                 });
-
-                                                Get.snackbar("Success",
-                                                    "$title added to cart",
-                                                    colorText: AppColors.black,
-                                                    backgroundColor:
-                                                        AppColors
-                                                            .lite_20_green);
+                                                Get.snackbar(
+                                                  "Success",
+                                                  "Item added to cart",
+                                                  snackPosition: SnackPosition.BOTTOM,
+                                                  duration: const Duration(seconds: 2),
+                                                  backgroundColor: Colors.green,
+                                                  colorText: Colors.white,
+                                                );
                                               } else {
-                                                Get.snackbar("Notice",
-                                                    "$title is already in your cart.",
-                                                    colorText: AppColors.black,
-                                                    backgroundColor:
-                                                        Colors.yellow);
+                                                Get.snackbar(
+                                                  "Error",
+                                                  "Item already in cart",
+                                                  snackPosition: SnackPosition.BOTTOM,
+                                                  duration: const Duration(seconds: 2),
+                                                  backgroundColor: Colors.red,
+                                                  colorText: Colors.white,
+                                                );
                                               }
                                             },
-                                            text: "Add to cart",
+                                            text: "Add to Cart",
                                           ),
                                         ),
                                       ],
-                                    ),
+                                    )
                                   ],
                                 ),
                               ),
